@@ -12,6 +12,7 @@ int player1score = 0;
 int player2score = 0;
 bool botmode = false;
 bool modechoosed = false;
+float speedup=1.0f;
 
 typedef struct Paddle {
     Rectangle rect;
@@ -31,8 +32,8 @@ void padMove(Paddle *paddle, bool Up, bool Down){
 }
 
 void ballMove (Ball *ball, Paddle *paddle1, Paddle *paddle2){
-    ball->pos.x += ball->speed.x;
-    ball->pos.y += ball->speed.y;
+    ball->pos.x += ball->speed.x*speedup;
+    ball->pos.y += ball->speed.y*speedup;
     //Ball hit wall
     if (ball->pos.y <= 0 || ball->pos.y >= screenHeight - ballsize)
     {
@@ -144,12 +145,21 @@ int main(void)
                 if (IsKeyPressed(KEY_R)) {
                     player1score = 0;
                     player2score = 0;
+                    speedup=1;
                 }
             } else 
             {
                 ballMove(&ball, &paddle1, &paddle2);
+                speedup +=GetFrameTime()*0.01f;
             }
-            
+            //choose mode again
+            if (IsKeyDown(KEY_L))
+            {
+                   modechoosed = false;
+                   player1score = 0;
+                   player2score = 0;
+                   speedup=1;
+            }
         } 
         else 
         {
@@ -158,6 +168,7 @@ int main(void)
             DrawText("Ping Pong", screenWidth / 2 - 120, screenHeight / 4 - 60, 50, RAYWHITE);
             DrawText("Press '1' for Friend Mode", screenWidth / 2 - 140, screenHeight / 2 + 100, 20, RAYWHITE);
             DrawText("Press '2' for Bot Mode", screenWidth / 2 - 140, screenHeight / 2 + 130, 20, RAYWHITE);
+            DrawText("Press 'L' to choose mode again", 20, 430, 10, RAYWHITE);
         EndDrawing();
         }
     //CloseWindow();    
