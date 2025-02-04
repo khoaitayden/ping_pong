@@ -13,6 +13,8 @@ int player2score = 0;
 bool botmode = false;
 bool modechoosed = false;
 float speedup=1.0f;
+Sound hitwall;
+Sound hitpad;
 
 typedef struct Paddle {
     Rectangle rect;
@@ -37,25 +39,32 @@ void ballMove (Ball *ball, Paddle *paddle1, Paddle *paddle2){
     //Ball hit wall
     if (ball->pos.y <= 0 || ball->pos.y >= screenHeight - ballsize)
     {
+        PlaySound(hitwall);
         ball->speed.y *= -1;
+        speedup +=0.05f;
     }
 
     // Ball hit pad
     if (CheckCollisionCircleRec(ball->pos, ballsize / 2, paddle1->rect) || CheckCollisionCircleRec(ball->pos, ballsize / 2, paddle2->rect))
     {
+        PlaySound(hitpad);
         ball->speed.x *= -1;
+        speedup +=0.05f;
+        
     }
     if (ball->pos.x<=0)
     {
-        player1score++;
+        player2score++;
         ball->pos = (Vector2){screenWidth / 2, screenHeight / 2};
         ball->speed = (Vector2){5.0f, 5.0f};
+        speedup=1;
     }
     if (ball->pos.x>= screenWidth)
     {
-        player2score++;
+        player1score++;
         ball->pos = (Vector2){screenWidth / 2, screenHeight / 2};
         ball->speed = (Vector2){-5.0f, -5.0f};
+        speedup=1;
     }
         
 };
@@ -106,12 +115,23 @@ int main(void)
     
     Paddle paddle1, paddle2;
     Ball ball;
+    Music soundtrack;
+    
+    
     loadgame(&paddle1, &paddle2, &ball);
     InitWindow(screenWidth, screenHeight, "Ping Pong");
+    InitAudioDevice();
+    
+    soundtrack=LoadMusicStream("ping_pong_sound_track.mp3");
+    hitwall=LoadSound("hit wall.wav");
+    hitpad=LoadSound("hit pad.wav");
+    PlayMusicStream(soundtrack);
+    SetMusicVolume(soundtrack,0.2f);
     SetTargetFPS(60);
     
     while (!WindowShouldClose())
     {
+        UpdateMusicStream(soundtrack);
         choosegamemode();
         
         if (modechoosed){
@@ -136,10 +156,10 @@ int main(void)
             {
                 if (player1score >= 10) 
                 {
-                    DrawText("Player 2 Win", screenWidth / 2 - 100, screenHeight / 2 - 30, 50, RAYWHITE);
+                    DrawText("Player 1 Win", screenWidth / 2 - 100, screenHeight / 2 - 30, 50, RAYWHITE);
                 } else 
                 {
-                    DrawText("Player 1 Win", screenWidth / 2 - 100, screenHeight / 2 - 30, 50, RAYWHITE);
+                    DrawText("Player 2 Win", screenWidth / 2 - 100, screenHeight / 2 - 30, 50, RAYWHITE);
                 }
                 DrawText("Press R to Restart", screenWidth / 2 - 120, screenHeight / 2 + 30, 20, RAYWHITE);
                 if (IsKeyPressed(KEY_R)) {
@@ -150,7 +170,6 @@ int main(void)
             } else 
             {
                 ballMove(&ball, &paddle1, &paddle2);
-                speedup +=GetFrameTime()*0.01f;
             }
             //choose mode again
             if (IsKeyDown(KEY_L))
@@ -171,7 +190,10 @@ int main(void)
             DrawText("Press 'L' to choose mode again", 20, 430, 10, RAYWHITE);
         EndDrawing();
         }
-    //CloseWindow();    
+        
     }
+    UnloadMusicStream(soundtrack);
+    CloseAudioDevice();
+    CloseWindow();
     return 0;
 }
