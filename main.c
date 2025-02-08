@@ -22,6 +22,7 @@ bool checkdarkmode=true;
 bool choosedtheme=false;
 float bothard=1;
 bool choosedbotmode=false;
+bool bosstrackplayed=false;
 
 typedef struct Paddle {
     Rectangle rect;
@@ -127,6 +128,8 @@ void choosebotmode (){
     
 }
 
+
+
 void choosegamemode (){
     if (IsKeyPressed(KEY_ONE)) 
     {
@@ -155,6 +158,7 @@ void scoreupdatewhite(){
     Music soundtrack1;
     Music soundtrack2;
     Music soundtrack3;
+    Music bosstrack;
 void mastervolumn(){
     if (IsKeyPressed(KEY_M))
         {
@@ -184,13 +188,22 @@ void loadsong(){
             StopMusicStream(soundtrack1);
             StopMusicStream(soundtrack2);
             StopMusicStream(soundtrack3);
+            StopMusicStream(bosstrack);
             if (songnum==3){songnum=1;}else {songnum++;}
             switch (songnum){
                 case 1:PlayMusicStream(soundtrack1);break;
                 case 2:PlayMusicStream(soundtrack2);break;
                 case 3:PlayMusicStream(soundtrack3);break;
             }
+            bosstrackplayed=false;
         }
+}
+
+void bossmusic(){
+        StopMusicStream(soundtrack1);
+        StopMusicStream(soundtrack2);
+        StopMusicStream(soundtrack3);
+        PlayMusicStream(bosstrack);
 }
 
 int main(void)
@@ -204,9 +217,10 @@ int main(void)
     soundtrack1=LoadMusicStream("ping_pong_sound_track.mp3");
     soundtrack2=LoadMusicStream("ballsong.mp3");
     soundtrack3=LoadMusicStream("goodsong.mp3");
+    bosstrack=LoadMusicStream("bosstrack.mp3");
     hitwall=LoadSound("hit wall.wav");
     hitpad=LoadSound("hit pad.wav");
-    SetTargetFPS(60);
+    SetTargetFPS(90);
     
     while (!WindowShouldClose())
     {
@@ -220,15 +234,20 @@ int main(void)
             UpdateMusicStream(soundtrack3);
             if (checkdarkmode)
             {    
-                choosegamemode();
+                if (!modechoosed)choosegamemode();
                 if (modechoosed)
-                {
+                 {
                     scoreupdateblack();
                     if (botmode)
                     {
                         choosebotmode();
                         if (choosedbotmode)
                         {
+                            if (bothard>5 && !bosstrackplayed){
+                                bossmusic();
+                                bosstrackplayed=true;
+                            }
+                            UpdateMusicStream(bosstrack);
                             BeginDrawing();
                                 ClearBackground(BLACK);
                                 DrawRectangleRec(paddle1.rect, RED);
@@ -261,6 +280,8 @@ int main(void)
                         EndDrawing();
                         padMove(&paddle1,IsKeyDown(KEY_W), IsKeyDown(KEY_S));
                         padMove(&paddle2,IsKeyDown(KEY_UP), IsKeyDown(KEY_DOWN));
+                        bosstrackplayed=false;
+                        StopMusicStream(bosstrack);
                     };
                     
                     if ((botmode&&choosedbotmode)||!botmode){
@@ -292,6 +313,8 @@ int main(void)
                            player2score = 0;
                            speedup=1;
                            choosedbotmode=false;
+                           bosstrackplayed=false;
+                           StopMusicStream(bosstrack);
                     }
                 } 
                 else 
@@ -302,23 +325,28 @@ int main(void)
                     DrawText("Press '1' for Friend Mode", screenWidth / 2 - 140, screenHeight / 2 + 90, 20, RAYWHITE);
                     DrawText("Press '2' for Bot Mode", screenWidth / 2 - 140, screenHeight / 2 + 110, 20, RAYWHITE);
                     DrawText("Press 'L' to choose mode again", 20, 430, 10, RAYWHITE);
-                    DrawText("Press 'M' to mute sound", 670, 430, 10, RAYWHITE);
+                    DrawText("Press 'M' to change volume", 650, 430, 10, RAYWHITE);
                     DrawText("Press 'N' to choose song", 350, 430, 10, RAYWHITE);
                 EndDrawing();
                 }
             } 
             else
             {
-                choosegamemode();
+                if (!modechoosed)choosegamemode();
                 if (modechoosed)
                 {
                    
                     scoreupdatewhite();
                     if (botmode)
                     {
-                        choosebotmode();
+                        choosebotmode();                 
                         if (choosedbotmode)
                         {
+                            if (bothard>5 && !bosstrackplayed){
+                                bossmusic();
+                                bosstrackplayed=true;
+                            }   
+                            UpdateMusicStream(bosstrack);
                         BeginDrawing();
                             ClearBackground(WHITE);
                             DrawRectangleRec(paddle1.rect, RED);
@@ -338,11 +366,15 @@ int main(void)
                                 DrawText("Press '6' hard Mode", screenWidth / 2 - 140, screenHeight / 2 + 120, 20, BLACK);
                                 DrawText("Press '7' nightmate Mode", screenWidth / 2 - 140, screenHeight / 2 + 150, 20, BLACK);
                                 DrawText("Press '0' why even bother", screenWidth / 2 - 140, screenHeight / 2 + 180, 20, BLACK);
-                            EndDrawing();                         
+                            EndDrawing();
+                            bosstrackplayed=false;
+                            StopMusicStream(bosstrack);                            
                         }
                     } 
                     else 
                     {
+                        bosstrackplayed=false;
+                        StopMusicStream(bosstrack);
                         BeginDrawing();
                             ClearBackground(WHITE);
                             DrawRectangleRec(paddle1.rect, RED);
@@ -351,6 +383,8 @@ int main(void)
                         EndDrawing();
                         padMove(&paddle1,IsKeyDown(KEY_W), IsKeyDown(KEY_S));
                         padMove(&paddle2,IsKeyDown(KEY_UP), IsKeyDown(KEY_DOWN));
+                        bosstrackplayed=false;
+                        StopMusicStream(bosstrack); 
                     };
                     
                     if ((botmode&&choosedbotmode)||!botmode){
@@ -381,6 +415,9 @@ int main(void)
                            player1score = 0;
                            player2score = 0;
                            speedup=1;
+                           bosstrackplayed=false;
+                           StopMusicStream(bosstrack);
+                           choosedbotmode=false;
                     }
                 } 
                 else 
@@ -391,7 +428,7 @@ int main(void)
                     DrawText("Press '1' for Friend Mode", screenWidth / 2 - 140, screenHeight / 2 + 90, 20, BLACK);
                     DrawText("Press '2' for Bot Mode", screenWidth / 2 - 140, screenHeight / 2 + 110, 20, BLACK);
                     DrawText("Press 'L' to choose mode again", 20, 430, 10, BLACK);
-                    DrawText("Press 'M' to mute sound", 670, 430, 10, BLACK);
+                    DrawText("Press 'M' to change volume", 650, 430, 10, BLACK);
                     DrawText("Press 'N' to choose song", 350, 430, 10, BLACK);
                 EndDrawing();
                 }
