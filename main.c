@@ -162,7 +162,7 @@ void scoreupdatewhite(){
 void mastervolumn(){
     if (IsKeyPressed(KEY_M))
         {
-            if (volume>=0.1f){volume=0;}else {volume+=0.02f;}
+            if (volume>=0.12f){volume=0;}else {volume+=0.02f;}
             SetMasterVolume(volume);
         }
 }
@@ -227,6 +227,7 @@ int main(void)
         choosetheme();
         if (choosedtheme)
         {
+            //sound load
             mastervolumn();
             loadsong();
             UpdateMusicStream(soundtrack1);
@@ -243,6 +244,7 @@ int main(void)
                         choosebotmode();
                         if (choosedbotmode)
                         {
+                            //run bot hard
                             if (bothard>5 && !bosstrackplayed){
                                 bossmusic();
                                 bosstrackplayed=true;
@@ -259,19 +261,21 @@ int main(void)
                         } 
                         else 
                         {
+                            //choose bot hard
                             BeginDrawing();
                                 ClearBackground(BLACK);
                                 DrawText("Ping Pong", screenWidth / 2 - 120, screenHeight / 4 - 60, 50, RAYWHITE);
                                 DrawText("Press '4' easy Mode", screenWidth / 2 - 140, screenHeight / 2 + 60, 20, RAYWHITE);
                                 DrawText("Press '5' medium Mode", screenWidth / 2 - 140, screenHeight / 2 + 90, 20, RAYWHITE);
                                 DrawText("Press '6' hard Mode", screenWidth / 2 - 140, screenHeight / 2 + 120, 20, RAYWHITE);
-                                DrawText("Press '7' nightmate Mode", screenWidth / 2 - 140, screenHeight / 2 + 150, 20, RAYWHITE);
+                                DrawText("Press '7' nightmare Mode", screenWidth / 2 - 140, screenHeight / 2 + 150, 20, RAYWHITE);
                                 DrawText("Press '0' why even bother", screenWidth / 2 - 140, screenHeight / 2 + 180, 20, RAYWHITE);
                             EndDrawing();
                         };
                     } 
                     else 
                     {
+                        //player vs player
                         BeginDrawing();
                             ClearBackground(BLACK);
                             DrawRectangleRec(paddle1.rect, RED);
@@ -283,7 +287,7 @@ int main(void)
                         bosstrackplayed=false;
                         StopMusicStream(bosstrack);
                     };
-                    
+                    //player winning score
                     if ((botmode&&choosedbotmode)||!botmode){
                         if (player1score >= 10 || player2score >= 10)
                         {
@@ -319,6 +323,7 @@ int main(void)
                 } 
                 else 
                 {
+                    //choose mode
                 BeginDrawing();
                     ClearBackground(BLACK);
                     DrawText("Ping Pong", screenWidth / 2 - 120, screenHeight / 4 - 60, 50, RAYWHITE);
@@ -364,7 +369,7 @@ int main(void)
                                 DrawText("Press '4' easy Mode", screenWidth / 2 - 140, screenHeight / 2 + 60, 20, BLACK);
                                 DrawText("Press '5' medium Mode", screenWidth / 2 - 140, screenHeight / 2 + 90, 20, BLACK);
                                 DrawText("Press '6' hard Mode", screenWidth / 2 - 140, screenHeight / 2 + 120, 20, BLACK);
-                                DrawText("Press '7' nightmate Mode", screenWidth / 2 - 140, screenHeight / 2 + 150, 20, BLACK);
+                                DrawText("Press '7' nightmare Mode", screenWidth / 2 - 140, screenHeight / 2 + 150, 20, BLACK);
                                 DrawText("Press '0' why even bother", screenWidth / 2 - 140, screenHeight / 2 + 180, 20, BLACK);
                             EndDrawing();
                             bosstrackplayed=false;
@@ -386,7 +391,7 @@ int main(void)
                         bosstrackplayed=false;
                         StopMusicStream(bosstrack); 
                     };
-                    
+                    //player winning score
                     if ((botmode&&choosedbotmode)||!botmode){
                         if (player1score >= 10 || player2score >= 10)
                         {
@@ -422,6 +427,7 @@ int main(void)
                 } 
                 else 
                 {
+                    //choose mode
                 BeginDrawing();
                     ClearBackground(WHITE);
                     DrawText("Ping Pong", screenWidth / 2 - 120, screenHeight / 4 - 60, 50, BLACK);
@@ -436,6 +442,7 @@ int main(void)
         } 
         else
         {
+            //choose darkmode
             BeginDrawing();
                     ClearBackground(BLACK);
                     DrawText("Ping Pong", screenWidth / 2 - 120, screenHeight / 4 - 60, 50, WHITE);
