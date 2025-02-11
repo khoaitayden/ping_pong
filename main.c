@@ -211,6 +211,7 @@ int main(void)
     Paddle paddle1, paddle2;
     Ball ball;
     loadgame(&paddle1, &paddle2, &ball);
+    //window
     InitWindow(screenWidth, screenHeight, "Ping Pong");
     InitAudioDevice();
     
@@ -363,6 +364,7 @@ int main(void)
                         }
                         else
                         {
+                            //choose bot hard
                             BeginDrawing();
                                 ClearBackground(WHITE);
                                 DrawText("Ping Pong", screenWidth / 2 - 120, screenHeight / 4 - 60, 50, BLACK);
